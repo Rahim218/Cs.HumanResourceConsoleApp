@@ -40,7 +40,7 @@ namespace Cs.HumanResourceConsoleApp.Classes
 
         public override string ToString()
         {
-            return $"No : {No}\nFullName : {FullName}\nSalary : {Salary}\nPosition : {Position}\nDepartament : {Departament}\nStardate : {StartDate}";
+            return $"No : {No} -^^- FullName : {FullName} -^^- Salary : {Salary} -^^- Position : {Position} -^^- Departament : {Departament} -^^- Stardate : {StartDate}";
         }
 
     }

@@ -1,4 +1,5 @@
 ﻿using Cs.HumanResourceConsoleApp.Classes;
+using Cs.HumanResourceConsoleApp.Enums;
 using System;
 
 namespace Cs.HumanResourceConsoleApp
@@ -8,77 +9,62 @@ namespace Cs.HumanResourceConsoleApp
         static void Main(string[] args)
         {
 
-            Employee employee = new Employee(Enums.EmployeeDepartament.Credite)
+         HumanResourceManager hrm = new HumanResourceManager();
+            string option;
+            do
             {
-                FullName = "Rahim Valiyev",
-                Position = Enums.EmployeePosition.Fronend_Developer,
-                Salary = 1500,
+                Console.Clear();
+                Console.WriteLine(">>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<\n");
+                Console.WriteLine("      1. Iscilerin siyahisina bax.");
+                Console.WriteLine("      2  Departamentdeki iscilerin siyahisina bax .");
+                Console.WriteLine("      3. Isci elave et.");
+                Console.WriteLine("      4. Isci uzerinde deyisiklik et.");
+                Console.WriteLine("      5. Isci sil.");
+                Console.WriteLine("      6. Axtaris et.");
+                Console.WriteLine("      7. Tarix araligina gore iscilerin sayina bax.");
+                Console.WriteLine("      8. Secilmis departamentdeki iscilerin siyahisina bax .");
+                Console.WriteLine("      0. Menyudan chix.\n");
+                Console.WriteLine("\nSechiminizi daxil edin ve 'ENTER' duymesini kilikleyin.");
+                option = Console.ReadLine();
+
+                switch (option)
+                {
+                    case "1":
+                        Console.Clear();
+                        ShowEmployee(hrm);
+                        Console.ReadLine();
+                        break;
+                        case "2":
+                        Console.Clear();
+                        Console.WriteLine("Departament daxil edin :");
+                        foreach (var item in Enum.GetValues(typeof(EmployeeDepartament)))
+                        {
+                            Console.WriteLine($"{(int)item} - {item}");
+                        }
+                        int depart;
+                       
+                        do
+                        {
 
 
-            };
-            Employee employee2 = new Employee(Enums.EmployeeDepartament.Finance)
-            {
-                FullName = "Xalid Suleymanov",
-                Position = Enums.EmployeePosition.Backend_Developer,
-                Salary = 2500,
+                            depart = int.Parse(Console.ReadLine());
+                            
+                        } while (Enum.IsDefined(typeof(EmployeeDepartament), depart) && isOk == false);
 
 
-            };
-            Employee employee3 = new Employee(Enums.EmployeeDepartament.Information_Technology)
-            {
-                FullName = "Behruz Rehimli",
-                Position = Enums.EmployeePosition.Full_Stack_Developer,
-                Salary = 1000,
+                        Console.ReadLine();
+                        break;
+                }
 
+            } while (option != "0");
 
-            };
-            Employee employee4 = new Employee(Enums.EmployeeDepartament.Finance)
-            {
-                FullName = "Nuru Huseynov",
-                Position = Enums.EmployeePosition.System_Admistrator,
-                Salary = 500,
-
-
-            };
-
-
-            HumanResourceManager hrm = new HumanResourceManager();
-            hrm.AddEmployee(employee);
-            hrm.AddEmployee(employee2);
-            hrm.AddEmployee(employee3);
-            hrm.AddEmployee(employee4);
-
-
+        }
+        static void ShowEmployee(HumanResourceManager hrm)
+        {
             foreach (var item in hrm.Employees)
             {
-                Console.WriteLine($"{item.No} -{item.FullName} - {item.Salary} - {item.Position}- {item.Departament}");
+                Console.WriteLine(item);
             }
-            hrm.RemoveEmployee("CR1000");
-            Console.WriteLine();
-            foreach (var item in hrm.Employees)
-            {
-                Console.WriteLine($"{item.No} -{item.FullName} - {item.Salary} - {item.Position}- {item.Departament}");
-            }
-            Console.WriteLine();
-            
-            foreach (var item in hrm.SearcEmployee("Nuru"))
-            {
-                
-                    Console.WriteLine($"{item.No} -{item.FullName} - {item.Salary} - {item.Position}- {item.Departament}");
-                
-
-            }
-            Console.WriteLine();
-            hrm.EditEmployee("FN1003", 1500, Enums.EmployeePosition.Fronend_Developer);
-            foreach (var item in hrm.Employees)
-            {
-                Console.WriteLine($"{item.No} -{item.FullName} - {item.Salary} - {item.Position}- {item.Departament}");
-            }
-
-
-
-
-
         }
     }
 }
