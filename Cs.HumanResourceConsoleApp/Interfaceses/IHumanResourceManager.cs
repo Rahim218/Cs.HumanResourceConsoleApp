@@ -9,9 +9,10 @@ namespace Cs.HumanResourceConsoleApp.Interfaceses
     internal interface IHumanResourceManager
     {
          int MaxEmployeeCountForPerDepartment { get; }
+        List<Employee> Employees { get; }
         void AddEmployee(Employee employee);
         void RemoveEmployee(string employeeNo);
-        void EditEmployee(int employeeNo,double salary,EmployeePosition position);
+        void EditEmployee(string employeeNo,double salary,EmployeePosition position);
         List<Employee> SearcEmployee(string str);
     }
 }

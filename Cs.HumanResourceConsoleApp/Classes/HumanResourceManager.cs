@@ -9,7 +9,8 @@ namespace Cs.HumanResourceConsoleApp.Classes
 {
     internal class HumanResourceManager : IHumanResourceManager
     {
-        List<Employee> _employees = new List<Employee>();
+         List<Employee> _employees = new List<Employee>();
+        public List<Employee> Employees { get { return _employees; } }
         public int ItEmployeeCount => _getItEmployeeCount(x=>x.Departament==EmployeeDepartament.Information_Technology);
         public int FinanceEmployeeCount => _getItEmployeeCount(x=>x.Departament==EmployeeDepartament.Finance);
         public int CrediteEmployeeCount => _getItEmployeeCount(x=>x.Departament==EmployeeDepartament.Credite);
@@ -24,14 +25,12 @@ namespace Cs.HumanResourceConsoleApp.Classes
                 throw new HasAlreadyBeenEmployeeEcxeption();
             }
            
-            foreach (var item in _employees)
-            {
-                if (item.Departament == EmployeeDepartament.Information_Technology)
+                if (employee.Departament == EmployeeDepartament.Information_Technology)
                 {
                     
                     if (ItEmployeeCount <= _maxEmployeeCountForPerDepartment)
                     {
-                        _employees.Add(item);
+                        _employees.Add(employee);
                     }
                     else
                     {
@@ -39,12 +38,12 @@ namespace Cs.HumanResourceConsoleApp.Classes
                     }
 
                 }
-                else if (item.Departament == EmployeeDepartament.Finance)
+                else if (employee.Departament == EmployeeDepartament.Finance)
                 {
                     
                     if (FinanceEmployeeCount <= _maxEmployeeCountForPerDepartment)
                     {
-                        _employees.Add(item);
+                        _employees.Add(employee);
                     }
                     else
                     {
@@ -58,7 +57,7 @@ namespace Cs.HumanResourceConsoleApp.Classes
                     
                     if (CrediteEmployeeCount <= _maxEmployeeCountForPerDepartment)
                     {
-                        _employees.Add(item);
+                        _employees.Add(employee);
                     }
                     else
                     {
@@ -66,24 +65,64 @@ namespace Cs.HumanResourceConsoleApp.Classes
                     }
 
                 }
-            }
+            
 
            
         }
 
-        public void EditEmployee(int employeeNo, double salary, EmployeePosition position)
+        public void EditEmployee(string employeeNo, double salary, EmployeePosition position)
         {
-            
+            if (!_hasEmployeeNo(employeeNo))
+            {
+                throw new NotFoundEmployeeException();
+            }
+            foreach (var item in _employees)
+            {
+                if (item.No == employeeNo)
+                {
+                    item.Salary = salary;
+                    item.Position = position;
+                }
+            }
         }
 
         public void RemoveEmployee(string employeeNo)
         {
-           
+            if (!_hasEmployeeNo(employeeNo))
+            {
+                throw new NotFoundEmployeeException();
+            }
+            foreach (var item in _employees)
+            {
+                if (item.No == employeeNo)
+                {
+                    _employees.Remove(item);
+                    break;
+                   
+                }
+
+            }
+            
+
         }
 
         public List<Employee> SearcEmployee(string str)
         {
-            throw new NotImplementedException();
+            var list = new List<Employee>();
+            bool searcName = false;
+            foreach (var item in _employees)
+            {
+                if (item.FullName.Contains(str))
+                {
+                    list.Add(item);
+                    searcName = true;
+                }
+            }
+            if (searcName==true)
+            {
+                return list;
+            }
+            throw new NotFoundEmployeeByFullNameException();
         }
 
 

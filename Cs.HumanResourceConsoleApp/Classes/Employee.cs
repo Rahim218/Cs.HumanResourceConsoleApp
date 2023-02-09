@@ -38,5 +38,10 @@ namespace Cs.HumanResourceConsoleApp.Classes
         public EmployeeDepartament Departament;
         public DateTime StartDate;
 
+        public override string ToString()
+        {
+            return $"No : {No}\nFullName : {FullName}\nSalary : {Salary}\nPosition : {Position}\nDepartament : {Departament}\nStardate : {StartDate}";
+        }
+
     }
 }
