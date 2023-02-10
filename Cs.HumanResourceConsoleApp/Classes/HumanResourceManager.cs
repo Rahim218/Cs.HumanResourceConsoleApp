@@ -11,12 +11,11 @@ namespace Cs.HumanResourceConsoleApp.Classes
     {
          List<Employee> _employees = new List<Employee>();
         public List<Employee> Employees { get { return _employees; } }
-        public int ItEmployeeCount => _getItEmployeeCount(x=>x.Departament==EmployeeDepartament.Information_Technology);
-        public int FinanceEmployeeCount => _getItEmployeeCount(x=>x.Departament==EmployeeDepartament.Finance);
-        public int CrediteEmployeeCount => _getItEmployeeCount(x=>x.Departament==EmployeeDepartament.Credite);
-
-        private int _maxEmployeeCountForPerDepartment = 10;
-        public int MaxEmployeeCountForPerDepartment { get { return _maxEmployeeCountForPerDepartment; } }
+        private int ItEmployeeCount => _getItEmployeeCount(x=>x.Departament==EmployeeDepartament.Information_Technology);
+        private int FinanceEmployeeCount => _getItEmployeeCount(x=>x.Departament==EmployeeDepartament.Finance);
+        private int CrediteEmployeeCount => _getItEmployeeCount(x=>x.Departament==EmployeeDepartament.Credite);        
+        static int _maxEmployeeCountForPerDepartment = 10;
+       
 
         public void AddEmployee(Employee employee)
         {

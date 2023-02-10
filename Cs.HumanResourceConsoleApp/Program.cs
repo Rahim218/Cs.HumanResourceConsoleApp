@@ -1,6 +1,7 @@
 ﻿using Cs.HumanResourceConsoleApp.Classes;
 using Cs.HumanResourceConsoleApp.Enums;
 using System;
+using System.Collections.Generic;
 
 namespace Cs.HumanResourceConsoleApp
 {
@@ -36,22 +37,8 @@ namespace Cs.HumanResourceConsoleApp
                         break;
                         case "2":
                         Console.Clear();
-                        Console.WriteLine("Departament daxil edin :");
-                        foreach (var item in Enum.GetValues(typeof(EmployeeDepartament)))
-                        {
-                            Console.WriteLine($"{(int)item} - {item}");
-                        }
-                        int depart;
-                       
-                        do
-                        {
-
-
-                            depart = int.Parse(Console.ReadLine());
-                            
-                        } while (Enum.IsDefined(typeof(EmployeeDepartament), depart) && isOk == false);
-
-
+                        hrm.AddEmployee(CreateEmployee());
+                        Console.WriteLine($"\nMenu-ya qayitmaq ucun ENTER duymesini basin");
                         Console.ReadLine();
                         break;
                 }
@@ -65,6 +52,144 @@ namespace Cs.HumanResourceConsoleApp
             {
                 Console.WriteLine(item);
             }
+        }
+        static bool MakeFullName(string str)
+        {
+            if (string.IsNullOrWhiteSpace(str))
+            {
+                return false;
+            }
+            var nameSurname = str.Split(' ');
+            List<string> newNameSurname = new List<string>();
+            int count = 0;
+            foreach (var item in nameSurname)
+            {
+                if (item != "")
+                {
+                    newNameSurname.Add(item);
+                    count++;
+                }
+            }
+            if (count != 2)
+            {
+                return false;
+            }
+            if (!(HasNameAndSurname(newNameSurname[0])) || !(HasNameAndSurname(newNameSurname[1])))
+            {
+                return false;
+            }
+           
+            return true;
+
+        }
+        static bool HasNameAndSurname(string str)
+        {
+            if (string.IsNullOrWhiteSpace(str))
+            {
+                return false;
+            }
+            if (!char.IsUpper(str[0]))
+            {
+                return false;
+            }
+            for (int i = 1; i < str.Length; i++)
+            {
+                if (!char.IsLower(str[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        static Employee CreateEmployee()
+        {
+            Console.WriteLine("Departament daxil edin :");
+            foreach (var item in Enum.GetValues(typeof(EmployeeDepartament)))
+            {
+                Console.WriteLine($"{(int)item} - {item}");
+            }
+            string departStr;
+            int departNum;
+
+            bool isOk = false;
+            do
+            {
+                if (isOk == true)
+                {
+                    Console.WriteLine("Duzgun deyer daxil edin : ");
+                }
+
+                departStr = (Console.ReadLine());
+
+                isOk = true;
+
+
+            } while (!int.TryParse(departStr, out departNum) || !Enum.IsDefined(typeof(EmployeeDepartament), departNum));
+            EmployeeDepartament departament = (EmployeeDepartament)departNum;
+            isOk = false;
+            Console.WriteLine("FullName daxil edin : ");
+            string fullName;
+            do
+            {
+                if (isOk == true)
+                {
+                    Console.WriteLine("Ad ve soyadiniz boyuk herfle baslamalidir");
+                }
+                fullName = Console.ReadLine();
+                isOk = true;
+
+            } while (!MakeFullName(fullName));
+            isOk = false;
+            Console.WriteLine("Position daxil edin : ");
+            foreach (var item in Enum.GetValues(typeof(EmployeePosition)))
+            {
+                Console.WriteLine($"{(int)item} - {item}");
+            }
+            string positionStr;
+            int positionNum;
+            do
+            {
+                if (isOk == true)
+                {
+                    Console.WriteLine("Yalnizca (1),(2),(3) deyerlerini daxil ede bilersiniz");
+                }
+                positionStr = Console.ReadLine();
+                isOk = true;
+            } while (!int.TryParse(positionStr, out positionNum) || !Enum.IsDefined(typeof(EmployeePosition), positionNum));
+            EmployeePosition position = (EmployeePosition)positionNum;
+
+            Console.WriteLine("Maas daxil edin : ");
+            isOk = false;
+            string salaryStr;
+            double salary;
+            do
+            {
+                if (isOk == true)
+                {
+                    Console.WriteLine("Maas yalnizca reqem ve 300 den yuxari qeyd ede bilersiniz");
+                }
+                salaryStr = Console.ReadLine();
+                isOk = true;
+            } while (string.IsNullOrWhiteSpace(salaryStr) || !double.TryParse(salaryStr, out salary) || !(salary >= 300));
+
+
+            Console.WriteLine("Ise baslama tarixini qeyd edin : ");
+            isOk = false;
+            string startDateStr;
+            DateTime startDate;
+            do
+            {
+                if (isOk == true)
+                {
+                    Console.WriteLine("Ilk once Ay sonra Gun en son Il daxil edin");
+                }
+                startDateStr = Console.ReadLine();
+                isOk = true;
+            } while (string.IsNullOrWhiteSpace(startDateStr) || !DateTime.TryParse(startDateStr, out startDate));
+
+            Employee employee = new Employee(departament, salary, position, startDate, fullName);
+            return employee;
+            
         }
     }
 }

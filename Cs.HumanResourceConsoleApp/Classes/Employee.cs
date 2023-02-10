@@ -10,24 +10,14 @@ namespace Cs.HumanResourceConsoleApp.Classes
         static int _totalCount = 1000;
       
 
-        public Employee(EmployeeDepartament departament)
+        public Employee(EmployeeDepartament departament,double salary,EmployeePosition position,DateTime startDate,string fullName)
         {
             Departament = departament;
-            if (departament == EmployeeDepartament.Information_Technology)
-            {
-                _no = "IT" + _totalCount++;
-               
-            }
-            else if (departament == EmployeeDepartament.Finance)
-            {
-                _no = "FN" + _totalCount++;
-                
-            }
-            else
-            {
-                _no = "CR" + _totalCount++;
-                
-            }
+            Salary = salary;
+            Position = position;
+            StartDate = startDate;
+            FullName = fullName;        
+            _no = departament.ToString().Substring(0,2).ToUpper() + _totalCount++;
         }
         private string _no;
         public string No { get { return _no; } }
@@ -40,7 +30,7 @@ namespace Cs.HumanResourceConsoleApp.Classes
 
         public override string ToString()
         {
-            return $"No : {No} -^^- FullName : {FullName} -^^- Salary : {Salary} -^^- Position : {Position} -^^- Departament : {Departament} -^^- Stardate : {StartDate}";
+            return $"No : {No}-FullName : {FullName}-Salary : {Salary}-Position : {Position}-Departament : {Departament}-Stardate : {StartDate}";
         }
 
     }
