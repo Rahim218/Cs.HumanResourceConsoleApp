@@ -19,7 +19,7 @@ namespace Cs.HumanResourceConsoleApp.Classes
 
         public void AddEmployee(Employee employee)
         {
-            if (_hasEmployeeNo(employee.No))
+            if (HasEmployeeNo(employee.No))
             {
                 throw new HasAlreadyBeenEmployeeEcxeption();
             }
@@ -71,7 +71,7 @@ namespace Cs.HumanResourceConsoleApp.Classes
 
         public void EditEmployee(string employeeNo, double salary, EmployeePosition position)
         {
-            if (!_hasEmployeeNo(employeeNo))
+            if (!HasEmployeeNo(employeeNo))
             {
                 throw new NotFoundEmployeeException();
             }
@@ -87,7 +87,7 @@ namespace Cs.HumanResourceConsoleApp.Classes
 
         public void RemoveEmployee(string employeeNo)
         {
-            if (!_hasEmployeeNo(employeeNo))
+            if (!HasEmployeeNo(employeeNo))
             {
                 throw new NotFoundEmployeeException();
             }
@@ -137,7 +137,7 @@ namespace Cs.HumanResourceConsoleApp.Classes
             }
             return count;
         }
-        private bool _hasEmployeeNo(string employeeNo)
+        public bool HasEmployeeNo(string employeeNo)
         {
             foreach (var item in _employees)
             {

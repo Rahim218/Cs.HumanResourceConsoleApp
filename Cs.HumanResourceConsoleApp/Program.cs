@@ -10,7 +10,7 @@ namespace Cs.HumanResourceConsoleApp
         static void Main(string[] args)
         {
 
-         HumanResourceManager hrm = new HumanResourceManager();
+            HumanResourceManager hrm = new HumanResourceManager();
             string option;
             do
             {
@@ -35,12 +35,78 @@ namespace Cs.HumanResourceConsoleApp
                         ShowEmployee(hrm);
                         Console.ReadLine();
                         break;
-                        case "2":
+                    case "2":
+                        Console.Clear();
+                        Console.WriteLine("Departamenti daxil edin :");
+                        foreach (var item in Enum.GetValues(typeof(EmployeeDepartament)))
+                        {
+                            Console.WriteLine($"{(int)item} - {item}");
+                        }
+
+                        foreach (var item in GetEmployeeByDepartament(hrm, GetDepartamentOption()))
+                        {
+                            Console.WriteLine(item);
+                        }
+                        Console.ReadLine();
+
+                        break;
+                    case "3":
                         Console.Clear();
                         hrm.AddEmployee(CreateEmployee());
                         Console.WriteLine($"\nMenu-ya qayitmaq ucun ENTER duymesini basin");
                         Console.ReadLine();
                         break;
+                    case "4":
+                        Console.Clear();
+                        Console.WriteLine("Deyisiklik etmek istediyiniz iscinin No-sunu daxil edin");
+                        string employeeNo = Console.ReadLine();
+                        foreach (var item in hrm.Employees)
+                        {
+                            if (hrm.HasEmployeeNo(employeeNo))
+                            {
+                                Console.WriteLine($"Employee Fullname : {item.FullName}\nEmployee Salary : {item.Salary}\nEmployee Position : {item.Position}");
+                            }
+                        }
+                        Console.WriteLine("Yeni maasi daxil edin : ");
+                        string newSalaryStr;
+                        double newSalary;
+                        bool isOk = false;
+                        do
+                        {
+                            if (isOk == true)
+                            {
+                                Console.WriteLine("Maas 300 Azn den yuksek olmalidir");
+                            }
+                            newSalaryStr = Console.ReadLine();
+                            isOk = true;
+
+                        } while (string.IsNullOrWhiteSpace(newSalaryStr) || !double.TryParse(newSalaryStr,out newSalary) || !(newSalary>=300) );
+
+                        Console.WriteLine("Yeni position daxil edin : ");
+                        foreach (var item in Enum.GetValues(typeof(EmployeePosition)))
+                        {
+                            Console.WriteLine($"{(int)item} - {item}");
+                        }
+                        string positionStr;
+                        int positionNum;
+                        isOk = false;
+                        do
+                        {
+                            if (isOk == true)
+                            {
+                                Console.WriteLine("Yalnizca (1),(2),(3) deyerlerini daxil ede bilersiniz");
+                            }
+                            positionStr = Console.ReadLine();
+                            isOk = true;
+                        } while (!int.TryParse(positionStr, out positionNum) || !Enum.IsDefined(typeof(EmployeePosition), positionNum));
+                        EmployeePosition position = (EmployeePosition)positionNum;
+                        hrm.EditEmployee(employeeNo,newSalary,position);
+
+
+                        Console.ReadLine();
+                        break;
+
+                        
                 }
 
             } while (option != "0");
@@ -53,6 +119,7 @@ namespace Cs.HumanResourceConsoleApp
                 Console.WriteLine(item);
             }
         }
+
         static bool MakeFullName(string str)
         {
             if (string.IsNullOrWhiteSpace(str))
@@ -78,10 +145,11 @@ namespace Cs.HumanResourceConsoleApp
             {
                 return false;
             }
-           
+
             return true;
 
         }
+
         static bool HasNameAndSurname(string str)
         {
             if (string.IsNullOrWhiteSpace(str))
@@ -101,6 +169,7 @@ namespace Cs.HumanResourceConsoleApp
             }
             return true;
         }
+
         static Employee CreateEmployee()
         {
             Console.WriteLine("Departament daxil edin :");
@@ -108,15 +177,14 @@ namespace Cs.HumanResourceConsoleApp
             {
                 Console.WriteLine($"{(int)item} - {item}");
             }
-            string departStr;
-            int departNum;
-
             bool isOk = false;
+            string departStr;
+            int departNum;            
             do
             {
                 if (isOk == true)
                 {
-                    Console.WriteLine("Duzgun deyer daxil edin : ");
+                    Console.WriteLine("Yalnizca (1),(2),(3) deyerlerini daxil ede bilersiniz ");
                 }
 
                 departStr = (Console.ReadLine());
@@ -189,6 +257,41 @@ namespace Cs.HumanResourceConsoleApp
 
             Employee employee = new Employee(departament, salary, position, startDate, fullName);
             return employee;
+
+        }
+
+        static List<Employee>  GetEmployeeByDepartament(HumanResourceManager hrm , EmployeeDepartament dprt)
+        {
+            List<Employee> employees = new List<Employee>();
+
+            foreach (var item in hrm.Employees)
+            {
+                if (item.Departament==dprt)
+                {
+                    employees.Add(item);
+                }
+            }
+            return employees;
+        }
+
+        static EmployeeDepartament GetDepartamentOption()
+        {
+            
+           
+            string dprtStr;
+            int depart;
+            bool isOk = false;
+            do
+            {
+                if (isOk == true)
+                {
+                    Console.WriteLine("Yalnizca (1),(2),(3) deyerlerini daxil ede bilersiniz");
+                }
+                dprtStr = Console.ReadLine();
+                isOk = true;
+            } while (string.IsNullOrWhiteSpace(dprtStr) || !int.TryParse(dprtStr, out depart) || !Enum.IsDefined(typeof(EmployeeDepartament), depart));
+            EmployeeDepartament employeeDepartament = (EmployeeDepartament)depart;
+            return employeeDepartament;
             
         }
     }
