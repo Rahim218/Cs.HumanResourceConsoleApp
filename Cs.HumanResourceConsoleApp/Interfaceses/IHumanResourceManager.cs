@@ -13,6 +13,6 @@ namespace Cs.HumanResourceConsoleApp.Interfaceses
         void AddEmployee(Employee employee);
         void RemoveEmployee(string employeeNo);
         void EditEmployee(string employeeNo,double salary,EmployeePosition position);
-        List<Employee> SearcEmployee(string str);
+        List<Employee> SearcEmployee(Predicate<Employee> predicate);
     }
 }

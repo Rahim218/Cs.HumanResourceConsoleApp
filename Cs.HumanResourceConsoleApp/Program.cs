@@ -1,5 +1,6 @@
 ﻿using Cs.HumanResourceConsoleApp.Classes;
 using Cs.HumanResourceConsoleApp.Enums;
+using Cs.HumanResourceConsoleApp.Exceptions;
 using System;
 using System.Collections.Generic;
 
@@ -58,15 +59,29 @@ namespace Cs.HumanResourceConsoleApp
                         break;
                     case "4":
                         Console.Clear();
-                        Console.WriteLine("Deyisiklik etmek istediyiniz iscinin No-sunu daxil edin");
-                        string employeeNo = Console.ReadLine();
-                        foreach (var item in hrm.Employees)
+                        string employeeNo;
+                        bool trueOrFalse = false;
+                        do
                         {
-                            if (hrm.HasEmployeeNo(employeeNo))
+                            Console.WriteLine("Deyisiklik etmek istediyiniz iscinin No-sunu daxil edin");
+                            employeeNo = Console.ReadLine();
+                            foreach (var item in hrm.Employees)
                             {
-                                Console.WriteLine($"Employee Fullname : {item.FullName}\nEmployee Salary : {item.Salary}\nEmployee Position : {item.Position}");
+
+                                if (hrm.HasEmployeeNo(employeeNo))
+                                {
+                                    Console.WriteLine($"Employee Fullname : {item.FullName}\nEmployee Salary : {item.Salary}\nEmployee Position : {item.Position}");
+                                    trueOrFalse = true;
+                                }
                             }
-                        }
+                            if (trueOrFalse == false)
+                            {
+                                Console.WriteLine("Bu nomreli isci yoxdur....");
+                                Console.WriteLine("Isci nomresi XX1001 formasinda olmalidir..(XX - Departamentin ilk iki herfidir)..");
+                            }
+                        } while (trueOrFalse == false);
+
+
                         Console.WriteLine("Yeni maasi daxil edin : ");
                         string newSalaryStr;
                         double newSalary;
@@ -80,7 +95,7 @@ namespace Cs.HumanResourceConsoleApp
                             newSalaryStr = Console.ReadLine();
                             isOk = true;
 
-                        } while (string.IsNullOrWhiteSpace(newSalaryStr) || !double.TryParse(newSalaryStr,out newSalary) || !(newSalary>=300) );
+                        } while (string.IsNullOrWhiteSpace(newSalaryStr) || !double.TryParse(newSalaryStr, out newSalary) || !(newSalary >= 300));
 
                         Console.WriteLine("Yeni position daxil edin : ");
                         foreach (var item in Enum.GetValues(typeof(EmployeePosition)))
@@ -94,19 +109,70 @@ namespace Cs.HumanResourceConsoleApp
                         {
                             if (isOk == true)
                             {
-                                Console.WriteLine("Yalnizca (1),(2),(3) deyerlerini daxil ede bilersiniz");
+                                Console.WriteLine("Yalnizca (1),(2),(3),(4) deyerlerini daxil ede bilersiniz");
                             }
                             positionStr = Console.ReadLine();
                             isOk = true;
                         } while (!int.TryParse(positionStr, out positionNum) || !Enum.IsDefined(typeof(EmployeePosition), positionNum));
                         EmployeePosition position = (EmployeePosition)positionNum;
-                        hrm.EditEmployee(employeeNo,newSalary,position);
 
+                        hrm.EditEmployee(employeeNo, newSalary, position);
+                        Console.ReadLine();
+                        break;
+                    case "5":
+                        Console.Clear();
+
+                        string employeeNo2;
+                        isOk = false;
+                        do
+                        {
+                            try
+                            {
+                                Console.WriteLine("\nSiyahidan silmek istediyiniz iscinin No-sunu daxil edin :");
+                                employeeNo2 = Console.ReadLine();
+                                hrm.RemoveEmployee(employeeNo2);
+                                isOk = true;
+                            }
+                            catch (NotFoundEmployeeException ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                                Console.WriteLine($"Isci nomresi XX1001 formasinda olmalidir..(XX - Departamentin ilk iki herfidir)..");
+                            }
+                        } while (isOk == false);
+                        Console.ReadLine();
+                        break;
+                    case "6":
+                        Console.Clear();
+                        Console.WriteLine("Axtarmaq istediyiniz iscinin adini daxil edin");
+                        string fullNameStr;
+                        isOk = false;
+                        do
+                        {
+                            if (isOk==true)
+                            {
+                                Console.WriteLine("Ad ve Soyadi bosluq kimi qeyd ede bilmersiniz....");
+                                Console.WriteLine($"\nAd ve Soyadi yeniden daxil edin");
+                            }
+                            fullNameStr = Console.ReadLine();
+                            isOk=true;
+
+                        } while (string.IsNullOrWhiteSpace(fullNameStr));
+                        
+                        
+                        foreach (var item in hrm.SearcEmployee(x=>x.FullName.Contains(fullNameStr)))
+                        {
+                            Console.WriteLine(item);
+                        }
+                        Console.ReadLine();
+                        break;
+                    case "7":
+                        Console.Clear();
+                        Console.WriteLine("Ilk tarixi qeyd edin : ");
 
                         Console.ReadLine();
                         break;
 
-                        
+
                 }
 
             } while (option != "0");
@@ -179,7 +245,7 @@ namespace Cs.HumanResourceConsoleApp
             }
             bool isOk = false;
             string departStr;
-            int departNum;            
+            int departNum;
             do
             {
                 if (isOk == true)
@@ -219,7 +285,7 @@ namespace Cs.HumanResourceConsoleApp
             {
                 if (isOk == true)
                 {
-                    Console.WriteLine("Yalnizca (1),(2),(3) deyerlerini daxil ede bilersiniz");
+                    Console.WriteLine("Yalnizca (1),(2),(3),(4) deyerlerini daxil ede bilersiniz");
                 }
                 positionStr = Console.ReadLine();
                 isOk = true;
@@ -260,13 +326,13 @@ namespace Cs.HumanResourceConsoleApp
 
         }
 
-        static List<Employee>  GetEmployeeByDepartament(HumanResourceManager hrm , EmployeeDepartament dprt)
+        static List<Employee> GetEmployeeByDepartament(HumanResourceManager hrm, EmployeeDepartament dprt)
         {
             List<Employee> employees = new List<Employee>();
 
             foreach (var item in hrm.Employees)
             {
-                if (item.Departament==dprt)
+                if (item.Departament == dprt)
                 {
                     employees.Add(item);
                 }
@@ -276,8 +342,8 @@ namespace Cs.HumanResourceConsoleApp
 
         static EmployeeDepartament GetDepartamentOption()
         {
-            
-           
+
+
             string dprtStr;
             int depart;
             bool isOk = false;
@@ -292,7 +358,7 @@ namespace Cs.HumanResourceConsoleApp
             } while (string.IsNullOrWhiteSpace(dprtStr) || !int.TryParse(dprtStr, out depart) || !Enum.IsDefined(typeof(EmployeeDepartament), depart));
             EmployeeDepartament employeeDepartament = (EmployeeDepartament)depart;
             return employeeDepartament;
-            
+
         }
     }
 }

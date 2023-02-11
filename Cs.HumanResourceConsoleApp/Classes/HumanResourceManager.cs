@@ -105,13 +105,13 @@ namespace Cs.HumanResourceConsoleApp.Classes
 
         }
 
-        public List<Employee> SearcEmployee(string str)
+        public List<Employee> SearcEmployee(Predicate<Employee> predicate)
         {
             var list = new List<Employee>();
             bool searcName = false;
             foreach (var item in _employees)
             {
-                if (item.FullName.Contains(str))
+                if (predicate(item))
                 {
                     list.Add(item);
                     searcName = true;
@@ -121,7 +121,7 @@ namespace Cs.HumanResourceConsoleApp.Classes
             {
                 return list;
             }
-            throw new NotFoundEmployeeByFullNameException();
+            throw new NotFoundEmployeeException();
         }
 
 
@@ -139,6 +139,10 @@ namespace Cs.HumanResourceConsoleApp.Classes
         }
         public bool HasEmployeeNo(string employeeNo)
         {
+            if (string.IsNullOrWhiteSpace(employeeNo))
+            {
+                return false;
+            }
             foreach (var item in _employees)
             {
                 if (item.No == employeeNo)
