@@ -10,5 +10,6 @@ namespace Cs.HumanResourceConsoleApp.Enums
         Finance,
         Credite,
         
+        
     }
 }

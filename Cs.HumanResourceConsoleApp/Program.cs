@@ -39,15 +39,11 @@ namespace Cs.HumanResourceConsoleApp
                     case "2":
                         Console.Clear();
                         Console.WriteLine("Departamenti daxil edin :");
-                        foreach (var item in Enum.GetValues(typeof(EmployeeDepartament)))
-                        {
-                            Console.WriteLine($"{(int)item} - {item}");
-                        }
-                        var employeDepart = GetDepartamentOption();
-                        foreach (var item in GetEmployeeByDepartament(hrm, employeDepart))
-                        {
-                            Console.WriteLine(item);
-                        }
+                        ShowDepartamentOption();
+                        var employeDepart = GetCorrectDepartamentFromConsole();
+
+                        GetSearchEmployees(hrm, x => x.Departament == employeDepart);
+
                         Console.ReadLine();
 
                         break;
@@ -59,96 +55,52 @@ namespace Cs.HumanResourceConsoleApp
                         break;
                     case "4":
                         Console.Clear();
-                        string employeeNo;
-                        bool trueOrFalse = false;
-                        do
-                        {
-                            Console.WriteLine("Deyisiklik etmek istediyiniz iscinin No-sunu daxil edin");
-                            employeeNo = Console.ReadLine();
-                            foreach (var item in hrm.Employees)
-                            {
+                        Console.WriteLine("Isci No-sunu daxil edin :");
+                        var employeeNo = GetCorrectEmpNoFromConsole();
 
-
-                                if (item.No==employeeNo)
-                                {
-                                    Console.WriteLine($"Employee Fullname : {item.FullName}\nEmployee Salary : {item.Salary}\nEmployee Position : {item.Position}");
-                                    trueOrFalse = true;
-                                }
-                            }
-                            if (trueOrFalse == false)
-                            {
-                                Console.WriteLine("Bu nomreli isci yoxdur....");
-                                Console.WriteLine("Isci nomresi XX1001 formasinda olmalidir..(XX - Departamentin ilk iki herfidir)..");
-                            }
-                        } while (trueOrFalse == false);
+                        GetSearchEmployees(hrm, x => x.No == employeeNo);
 
 
                         Console.WriteLine("Yeni maasi daxil edin : ");
-                        string newSalaryStr;
-                        double newSalary;
-                        bool isOk = false;
-                        do
-                        {
-                            if (isOk == true)
-                            {
-                                Console.WriteLine("Maas 300 Azn den yuksek olmalidir");
-                            }
-                            newSalaryStr = Console.ReadLine();
-                            isOk = true;
-
-                        } while (string.IsNullOrWhiteSpace(newSalaryStr) || !double.TryParse(newSalaryStr, out newSalary) || !(newSalary >= 300));
+                        var newSalary = GetCorrectSalaryFromConssole();
 
                         Console.WriteLine("Yeni position daxil edin : ");
-                        foreach (var item in Enum.GetValues(typeof(EmployeePosition)))
-                        {
-                            Console.WriteLine($"{(int)item} - {item}");
-                        }
-                        string positionStr;
-                        int positionNum;
-                        isOk = false;
-                        do
-                        {
-                            if (isOk == true)
-                            {
-                                Console.WriteLine("Yalnizca (1),(2),(3),(4) deyerlerini daxil ede bilersiniz");
-                            }
-                            positionStr = Console.ReadLine();
-                            isOk = true;
-                        } while (!int.TryParse(positionStr, out positionNum) || !Enum.IsDefined(typeof(EmployeePosition), positionNum));
-                        EmployeePosition position = (EmployeePosition)positionNum;
 
-                        hrm.EditEmployee(employeeNo, newSalary, position);
+                        ShowPositionOption();
+
+                        var employeePosition = GetCorrectPositionFromConsole();
+
+                        hrm.EditEmployee(employeeNo, newSalary, employeePosition);
+
                         Console.ReadLine();
                         break;
                     case "5":
                         Console.Clear();
+                        Console.WriteLine("Isci nomresini daxil edin :");
+                        var employeNo = GetCorrectEmpNoFromConsole();
 
-                        string employeeNo2;
-                        isOk = false;
-                        do
+                        try
                         {
-                            try
-                            {
-                                Console.WriteLine("\nSiyahidan silmek istediyiniz iscinin No-sunu daxil edin :");
-                                employeeNo2 = Console.ReadLine();
-                                hrm.RemoveEmployee(employeeNo2);
-                                isOk = true;
-                            }
-                            catch (NotFoundEmployeeException ex)
-                            {
-                                Console.WriteLine(ex.Message);
-                                Console.WriteLine($"Isci nomresi XX1001 formasinda olmalidir..(XX - Departamentin ilk iki herfidir)..");
-                            }
-                        } while (isOk == false);
+                            hrm.RemoveEmployee(employeNo);
+                        }
+                        catch (NotFoundEmployeeException ex)
+                        {
+
+                            Console.WriteLine("Isci tapilmadi");
+                            Console.WriteLine($"\nMenu-ya qayidib secim etmek ucun ENTER duymesine basin");
+                        }
+
                         Console.ReadLine();
                         break;
                     case "6":
                         Console.Clear();
                         Console.WriteLine("Axtarmaq istediyiniz iscinin adini daxil edin");
-
-                        var name =GetCorrectFullNameFromConsole();
-                       
-                        GetSearchEmployees(hrm,x=>x.FullName.Contains(name));
+                        string name;
+                        do
+                        {
+                            name = Console.ReadLine();
+                        } while (string.IsNullOrWhiteSpace(name));
+                        GetSearchEmployees(hrm, x => x.FullName.Contains(name));
 
                         Console.WriteLine($"\nMenu-ya qayitmaq ucun ENTER basin");
 
@@ -157,10 +109,11 @@ namespace Cs.HumanResourceConsoleApp
                     case "7":
                         Console.Clear();
                         Console.WriteLine("Ilk tarixi qeyd edin : ");
-                       var firstDate = GetCorrectTimeFromConsole();
+
+                        var firstDate = GetCorrectTimeFromConsole();
 
                         Console.WriteLine("Ikinci tarixi qeyd edin : ");
-                       var secondDate = GetCorrectTimeFromConsole();
+                        var secondDate = GetCorrectTimeFromConsole();
 
                         GetSearchEmployees(hrm, x => x.StartDate > firstDate && x.StartDate < secondDate);
                         Console.ReadLine();
@@ -168,21 +121,20 @@ namespace Cs.HumanResourceConsoleApp
                     case "8":
                         Console.Clear();
                         Console.WriteLine("Departamenti daxil edin :");
-                        foreach (var item in Enum.GetValues(typeof(EmployeeDepartament)))
-                        {
-                            Console.WriteLine($"{(int)item} - {item}");
-                        }
-                        var employeeDprt = GetDepartamentOption();
+                        ShowDepartamentOption();
+                       
+                        var employeeDprt = GetCorrectDepartamentFromConsole();
 
                         double sum = 0;
                         int count = 0;
 
-                        foreach (var item in hrm.SearcEmployee(x=>x.Departament==employeeDprt))
+                        GetSearchEmployees(hrm, x => x.Departament == employeeDprt);
+                        foreach (var item in hrm.SearcEmployee(x=>x.Departament == employeeDprt))
                         {
                             sum += item.Salary;
                             count++;
-                        }
-                        double avarage = sum/count;
+                        }                      
+                        double avarage = sum / count;
                         Console.WriteLine("Secdiyiniz departamentdeki iscilerin maaslarinin ortalamasi :");
                         Console.WriteLine($"Avarage Salary - {avarage}");
 
@@ -257,184 +209,176 @@ namespace Cs.HumanResourceConsoleApp
         static Employee CreateEmployee()
         {
             Console.WriteLine("Departament daxil edin :");
-            foreach (var item in Enum.GetValues(typeof(EmployeeDepartament)))
-            {
-                Console.WriteLine($"{(int)item} - {item}");
-            }
-            bool isOk = false;
-            string departStr;
-            int departNum;
-            do
-            {
-                if (isOk == true)
-                {
-                    Console.WriteLine("Yalnizca (1),(2),(3) deyerlerini daxil ede bilersiniz ");
-                }
-
-                departStr = (Console.ReadLine());
-
-                isOk = true;
+            ShowDepartamentOption();
+            var employeeDepart = GetCorrectDepartamentFromConsole();
 
 
-            } while (!int.TryParse(departStr, out departNum) || !Enum.IsDefined(typeof(EmployeeDepartament), departNum));
-            EmployeeDepartament departament = (EmployeeDepartament)departNum;
-            isOk = false;
             Console.WriteLine("FullName daxil edin : ");
-            string fullName;
-            do
-            {
-                if (isOk == true)
-                {
-                    Console.WriteLine("Ad ve soyadiniz boyuk herfle baslamalidir");
-                }
-                fullName = Console.ReadLine();
-                isOk = true;
+            var fullName = GetCorrectFullNameFromConsole();
 
-            } while (!MakeFullName(fullName));
-            isOk = false;
+
+
             Console.WriteLine("Position daxil edin : ");
-            foreach (var item in Enum.GetValues(typeof(EmployeePosition)))
-            {
-                Console.WriteLine($"{(int)item} - {item}");
-            }
-            string positionStr;
-            int positionNum;
-            do
-            {
-                if (isOk == true)
-                {
-                    Console.WriteLine("Yalnizca (1),(2),(3),(4) deyerlerini daxil ede bilersiniz");
-                }
-                positionStr = Console.ReadLine();
-                isOk = true;
-            } while (!int.TryParse(positionStr, out positionNum) || !Enum.IsDefined(typeof(EmployeePosition), positionNum));
-            EmployeePosition position = (EmployeePosition)positionNum;
+            ShowPositionOption();
+            var employeePosition = GetCorrectPositionFromConsole();
+
 
             Console.WriteLine("Maas daxil edin : ");
-            isOk = false;
-            string salaryStr;
-            double salary;
-            do
-            {
-                if (isOk == true)
-                {
-                    Console.WriteLine("Maas yalnizca reqem ve 300 den yuxari qeyd ede bilersiniz");
-                }
-                salaryStr = Console.ReadLine();
-                isOk = true;
-            } while (string.IsNullOrWhiteSpace(salaryStr) || !double.TryParse(salaryStr, out salary) || !(salary >= 300));
+
+            var salary = GetCorrectSalaryFromConssole();
 
 
             Console.WriteLine("Ise baslama tarixini qeyd edin : ");
-            isOk = false;
-            string startDateStr;
-            DateTime startDate;
-            do
-            {
-                if (isOk == true)
-                {
-                    Console.WriteLine("Ilk once Ay sonra Gun en son Il daxil edin");
-                }
-                startDateStr = Console.ReadLine();
-                isOk = true;
-            } while (string.IsNullOrWhiteSpace(startDateStr) || !DateTime.TryParse(startDateStr, out startDate));
 
-            Employee employee = new Employee(departament, salary, position, startDate, fullName);
+            var startDate = GetCorrectTimeFromConsole();
+
+            Employee employee = new Employee(employeeDepart, salary, employeePosition, startDate, fullName);
             return employee;
 
         }
 
-        static List<Employee> GetEmployeeByDepartament(HumanResourceManager hrm, EmployeeDepartament dprt)
-        {
-            List<Employee> employees = new List<Employee>();
-
-            foreach (var item in hrm.Employees)
-            {
-                if (item.Departament == dprt)
-                {
-                    employees.Add(item);
-                }
-            }
-            return employees;
-        }
-
-        static EmployeeDepartament GetDepartamentOption()
+        static EmployeeDepartament GetCorrectDepartamentFromConsole()
         {
 
 
             string dprtStr;
             int depart;
-           bool isOk = false;
+            bool checkDepart = true;
             do
             {
-                if (isOk == true)
+                if (checkDepart == false)
                 {
                     Console.WriteLine("Yalnizca (1),(2),(3) deyerlerini daxil ede bilersiniz");
                 }
                 dprtStr = Console.ReadLine();
-                isOk = true;
+                checkDepart = false;
             } while (string.IsNullOrWhiteSpace(dprtStr) || !int.TryParse(dprtStr, out depart) || !Enum.IsDefined(typeof(EmployeeDepartament), depart));
             EmployeeDepartament employeeDepartament = (EmployeeDepartament)depart;
             return employeeDepartament;
 
         }
 
-        static void GetSearchEmployees(HumanResourceManager hrm,Predicate<Employee> predicate)
+        static void GetSearchEmployees(HumanResourceManager hrm, Predicate<Employee> predicate)
         {
-            
-                try
+            try
+            {
+                foreach (var item in hrm.SearcEmployee(predicate))
                 {
-                    foreach (var item in hrm.SearcEmployee(predicate))
-                    {
-                        Console.WriteLine(item);
-
-                    }
-                    
-                }
-                catch (NotFoundEmployeeException ex)
-                {
-
-                    Console.WriteLine(" Isci tapilmadi");
+                    Console.WriteLine(item);
 
                 }
-           
+
+            }
+            catch (NotFoundEmployeeException ex)
+            {
+
+                Console.WriteLine(" Isci tapilmadi");
+                Console.WriteLine($"\nMenyuya qayidib yeniden secim etmek ucun ENTER duymesine basin\n");
+
+            }
         }
 
         static string GetCorrectFullNameFromConsole()
         {
-            
-            string fullNameStr;
-            bool isOk = false;
+            bool checkFullName = true;
+            string fullName;
             do
             {
-                if (isOk == true)
+                if (checkFullName == false)
                 {
-                    Console.WriteLine("Ad ve Soyadi bosluq kimi qeyd ede bilmersiniz....");
-                    Console.WriteLine($"\nAd ve Soyadi yeniden daxil edin");
+                    Console.WriteLine("Ad ve soyad boyuk herfle baslamalidir");
                 }
-                fullNameStr = Console.ReadLine();
-                isOk = true;
+                fullName = Console.ReadLine();
+                checkFullName = false;
 
-            } while (string.IsNullOrWhiteSpace(fullNameStr));
+            } while (string.IsNullOrWhiteSpace(fullName) || !MakeFullName(fullName));
 
-            return fullNameStr;
+            return fullName;
         }
 
         static DateTime GetCorrectTimeFromConsole()
         {
             string DateStr;
             DateTime Date;
-             bool isOk = false;
+            bool checkPosition = true;
             do
             {
-                if (isOk == true)
+                if (checkPosition == false)
                 {
                     Console.WriteLine("Ilk onke Ay sonra Gun en son Il daxil edin");
                 }
                 DateStr = Console.ReadLine();
-                isOk = true;
+                checkPosition = false;
             } while (string.IsNullOrWhiteSpace(DateStr) || !DateTime.TryParse(DateStr, out Date));
             return Date;
+        }
+
+        static double GetCorrectSalaryFromConssole()
+        {
+            bool checkSalary = true;
+            string salaryStr;
+            double salary;
+            do
+            {
+                if (checkSalary == false)
+                {
+                    Console.WriteLine("Maas yalnizca reqem ve 300 den yuxari qeyd ede bilersiniz");
+                }
+                salaryStr = Console.ReadLine();
+                checkSalary = false;
+            } while (string.IsNullOrWhiteSpace(salaryStr) || !double.TryParse(salaryStr, out salary) || !(salary >= 300));
+            return salary;
+        }
+
+        static EmployeePosition GetCorrectPositionFromConsole()
+        {
+            bool checkPosition = true;
+            string positionStr;
+            int positionNum;
+            do
+            {
+                if (checkPosition == false)
+                {
+                    Console.WriteLine("Yalnizca (1),(2),(3),(4) deyerlerini daxil ede bilersiniz");
+                }
+                positionStr = Console.ReadLine();
+                checkPosition = false;
+            } while (!int.TryParse(positionStr, out positionNum) || !Enum.IsDefined(typeof(EmployeePosition), positionNum));
+            EmployeePosition position = (EmployeePosition)positionNum;
+            return position;
+        }
+
+        static string GetCorrectEmpNoFromConsole()
+        {
+            string empNo;
+            bool checkEmpNo = true;
+            do
+            {
+                if (checkEmpNo == false)
+                {
+                    Console.WriteLine("Isci nomresi XX1001 formasinda olmalidir..(XX - Departamentin ilk iki herfidir)..");
+                }
+                empNo = Console.ReadLine();
+                checkEmpNo = false;
+            } while (string.IsNullOrWhiteSpace(empNo));
+            return empNo;
+
+        }
+
+        static void ShowDepartamentOption()
+        {
+            foreach (var item in Enum.GetValues(typeof(EmployeeDepartament)))
+            {
+                Console.WriteLine($"{(int)item} - {item}");
+            }
+        }
+
+        static void ShowPositionOption()
+        {
+            foreach (var item in Enum.GetValues(typeof(EmployeePosition)))
+            {
+                Console.WriteLine($"{(int)item} - {item}");
+            }
         }
     }
 }

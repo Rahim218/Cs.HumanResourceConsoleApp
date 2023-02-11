@@ -64,8 +64,6 @@ namespace Cs.HumanResourceConsoleApp.Classes
                     }
 
                 }
-            
-
            
         }
 
