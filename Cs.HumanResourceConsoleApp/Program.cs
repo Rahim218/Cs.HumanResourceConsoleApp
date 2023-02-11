@@ -43,8 +43,8 @@ namespace Cs.HumanResourceConsoleApp
                         {
                             Console.WriteLine($"{(int)item} - {item}");
                         }
-
-                        foreach (var item in GetEmployeeByDepartament(hrm, GetDepartamentOption()))
+                        var employeDepart = GetDepartamentOption();
+                        foreach (var item in GetEmployeeByDepartament(hrm, employeDepart))
                         {
                             Console.WriteLine(item);
                         }
@@ -68,7 +68,8 @@ namespace Cs.HumanResourceConsoleApp
                             foreach (var item in hrm.Employees)
                             {
 
-                                if (hrm.HasEmployeeNo(employeeNo))
+
+                                if (item.No==employeeNo)
                                 {
                                     Console.WriteLine($"Employee Fullname : {item.FullName}\nEmployee Salary : {item.Salary}\nEmployee Position : {item.Position}");
                                     trueOrFalse = true;
@@ -144,33 +145,50 @@ namespace Cs.HumanResourceConsoleApp
                     case "6":
                         Console.Clear();
                         Console.WriteLine("Axtarmaq istediyiniz iscinin adini daxil edin");
-                        string fullNameStr;
-                        isOk = false;
-                        do
-                        {
-                            if (isOk==true)
-                            {
-                                Console.WriteLine("Ad ve Soyadi bosluq kimi qeyd ede bilmersiniz....");
-                                Console.WriteLine($"\nAd ve Soyadi yeniden daxil edin");
-                            }
-                            fullNameStr = Console.ReadLine();
-                            isOk=true;
 
-                        } while (string.IsNullOrWhiteSpace(fullNameStr));
-                        
-                        
-                        foreach (var item in hrm.SearcEmployee(x=>x.FullName.Contains(fullNameStr)))
-                        {
-                            Console.WriteLine(item);
-                        }
+                        var name =GetCorrectFullNameFromConsole();
+                       
+                        GetSearchEmployees(hrm,x=>x.FullName.Contains(name));
+
+                        Console.WriteLine($"\nMenu-ya qayitmaq ucun ENTER basin");
+
                         Console.ReadLine();
                         break;
                     case "7":
                         Console.Clear();
                         Console.WriteLine("Ilk tarixi qeyd edin : ");
+                       var firstDate = GetCorrectTimeFromConsole();
+
+                        Console.WriteLine("Ikinci tarixi qeyd edin : ");
+                       var secondDate = GetCorrectTimeFromConsole();
+
+                        GetSearchEmployees(hrm, x => x.StartDate > firstDate && x.StartDate < secondDate);
+                        Console.ReadLine();
+                        break;
+                    case "8":
+                        Console.Clear();
+                        Console.WriteLine("Departamenti daxil edin :");
+                        foreach (var item in Enum.GetValues(typeof(EmployeeDepartament)))
+                        {
+                            Console.WriteLine($"{(int)item} - {item}");
+                        }
+                        var employeeDprt = GetDepartamentOption();
+
+                        double sum = 0;
+                        int count = 0;
+
+                        foreach (var item in hrm.SearcEmployee(x=>x.Departament==employeeDprt))
+                        {
+                            sum += item.Salary;
+                            count++;
+                        }
+                        double avarage = sum/count;
+                        Console.WriteLine("Secdiyiniz departamentdeki iscilerin maaslarinin ortalamasi :");
+                        Console.WriteLine($"Avarage Salary - {avarage}");
 
                         Console.ReadLine();
                         break;
+
 
 
                 }
@@ -346,7 +364,7 @@ namespace Cs.HumanResourceConsoleApp
 
             string dprtStr;
             int depart;
-            bool isOk = false;
+           bool isOk = false;
             do
             {
                 if (isOk == true)
@@ -359,6 +377,64 @@ namespace Cs.HumanResourceConsoleApp
             EmployeeDepartament employeeDepartament = (EmployeeDepartament)depart;
             return employeeDepartament;
 
+        }
+
+        static void GetSearchEmployees(HumanResourceManager hrm,Predicate<Employee> predicate)
+        {
+            
+                try
+                {
+                    foreach (var item in hrm.SearcEmployee(predicate))
+                    {
+                        Console.WriteLine(item);
+
+                    }
+                    
+                }
+                catch (NotFoundEmployeeException ex)
+                {
+
+                    Console.WriteLine(" Isci tapilmadi");
+
+                }
+           
+        }
+
+        static string GetCorrectFullNameFromConsole()
+        {
+            
+            string fullNameStr;
+            bool isOk = false;
+            do
+            {
+                if (isOk == true)
+                {
+                    Console.WriteLine("Ad ve Soyadi bosluq kimi qeyd ede bilmersiniz....");
+                    Console.WriteLine($"\nAd ve Soyadi yeniden daxil edin");
+                }
+                fullNameStr = Console.ReadLine();
+                isOk = true;
+
+            } while (string.IsNullOrWhiteSpace(fullNameStr));
+
+            return fullNameStr;
+        }
+
+        static DateTime GetCorrectTimeFromConsole()
+        {
+            string DateStr;
+            DateTime Date;
+             bool isOk = false;
+            do
+            {
+                if (isOk == true)
+                {
+                    Console.WriteLine("Ilk onke Ay sonra Gun en son Il daxil edin");
+                }
+                DateStr = Console.ReadLine();
+                isOk = true;
+            } while (string.IsNullOrWhiteSpace(DateStr) || !DateTime.TryParse(DateStr, out Date));
+            return Date;
         }
     }
 }

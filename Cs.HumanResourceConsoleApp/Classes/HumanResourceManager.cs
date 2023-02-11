@@ -97,12 +97,9 @@ namespace Cs.HumanResourceConsoleApp.Classes
                 {
                     _employees.Remove(item);
                     break;
-                   
+
                 }
-
-            }
-            
-
+            }           
         }
 
         public List<Employee> SearcEmployee(Predicate<Employee> predicate)
