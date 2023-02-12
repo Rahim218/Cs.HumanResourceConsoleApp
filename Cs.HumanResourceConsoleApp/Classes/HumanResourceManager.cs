@@ -13,7 +13,7 @@ namespace Cs.HumanResourceConsoleApp.Classes
         public List<Employee> Employees { get { return _employees; } }
         private int ItEmployeeCount => _getEmployeeCountPerDepartment(x=>x.Departament==EmployeeDepartament.Information_Technology);
         private int FinanceEmployeeCount => _getEmployeeCountPerDepartment(x=>x.Departament==EmployeeDepartament.Finance);
-        private int CrediteEmployeeCount => _getEmployeeCountPerDepartment(x=>x.Departament==EmployeeDepartament.Credite);        
+        private int CrediteEmployeeCount => _getEmployeeCountPerDepartment(x=>x.Departament==EmployeeDepartament.Credite);             
         static int _maxEmployeeCountForPerDepartment = 2;
        
 

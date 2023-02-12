@@ -8,7 +8,7 @@ namespace Cs.HumanResourceConsoleApp.Interfaceses
 {
     internal interface IHumanResourceManager
     {
-        static int MaxEmployeeCountForPerDepartment { get; }
+        
         List<Employee> Employees { get; }
         void AddEmployee(Employee employee);
         void RemoveEmployee(string employeeNo);
