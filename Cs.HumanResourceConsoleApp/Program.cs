@@ -24,7 +24,7 @@ namespace Cs.HumanResourceConsoleApp
                 Console.WriteLine("      5. Isci sil.");
                 Console.WriteLine("      6. Axtaris et.");
                 Console.WriteLine("      7. Tarix araligina gore iscilerin sayina bax.");
-                Console.WriteLine("      8. Secilmis departamentdeki iscilerin siyahisina bax .");
+                Console.WriteLine("      8. Secilmis departamentdeki iscilerin maas ortalamasina bax .");
                 Console.WriteLine("      0. Menyudan chix.\n");
                 Console.WriteLine("\nSechiminizi daxil edin ve 'ENTER' duymesini kilikleyin.");
                 option = Console.ReadLine();
@@ -34,6 +34,7 @@ namespace Cs.HumanResourceConsoleApp
                     case "1":
                         Console.Clear();
                         ShowEmployee(hrm);
+                        Console.WriteLine($"\n       Menu -ya qayitmaq ucun ENTER duymesine basin......\n");
                         Console.ReadLine();
                         break;
                     case "2":
@@ -43,23 +44,24 @@ namespace Cs.HumanResourceConsoleApp
                         var employeDepart = GetCorrectDepartamentFromConsole();
 
                         GetSearchEmployees(hrm, x => x.Departament == employeDepart);
-
+                        Console.WriteLine($"\n       Menu -ya qayitmaq ucun ENTER duymesine basin......\n");
                         Console.ReadLine();
 
                         break;
                     case "3":
                         Console.Clear();
                         hrm.AddEmployee(CreateEmployee());
-                        Console.WriteLine($"\nMenu-ya qayitmaq ucun ENTER duymesini basin");
+                        Console.WriteLine($"\n       Menu -ya qayitmaq ucun ENTER duymesine basin......\n");
                         Console.ReadLine();
                         break;
                     case "4":
                         Console.Clear();
                         Console.WriteLine("Isci No-sunu daxil edin :");
-                        var employeeNo = GetCorrectEmpNoFromConsole();
+                        var employeeNo = GetCorrectEmpNoFromConsole(hrm);
 
-                        GetSearchEmployees(hrm, x => x.No == employeeNo);
+                          GetSearchEmployees(hrm, x => x.No == employeeNo);
 
+                     
 
                         Console.WriteLine("Yeni maasi daxil edin : ");
                         var newSalary = GetCorrectSalaryFromConssole();
@@ -71,13 +73,13 @@ namespace Cs.HumanResourceConsoleApp
                         var employeePosition = GetCorrectPositionFromConsole();
 
                         hrm.EditEmployee(employeeNo, newSalary, employeePosition);
-
+                        Console.WriteLine($"\n       Menu -ya qayitmaq ucun ENTER duymesine basin......\n");
                         Console.ReadLine();
                         break;
                     case "5":
                         Console.Clear();
                         Console.WriteLine("Isci nomresini daxil edin :");
-                        var employeNo = GetCorrectEmpNoFromConsole();
+                        var employeNo = GetCorrectEmpNoFromConsole(hrm);
 
                         try
                         {
@@ -87,7 +89,7 @@ namespace Cs.HumanResourceConsoleApp
                         {
 
                             Console.WriteLine("Isci tapilmadi");
-                            Console.WriteLine($"\nMenu-ya qayidib secim etmek ucun ENTER duymesine basin");
+                            Console.WriteLine($"\n       Menu-ya qayidib secim etmek ucun ENTER duymesine basin.......\n");
                         }
 
                         Console.ReadLine();
@@ -96,13 +98,19 @@ namespace Cs.HumanResourceConsoleApp
                         Console.Clear();
                         Console.WriteLine("Axtarmaq istediyiniz iscinin adini daxil edin");
                         string name;
+                        bool checkFullName= true;
                         do
                         {
+                            if (checkFullName == false)
+                            {
+                                Console.WriteLine($"\nAxtaris deyeri bosluq ola bilmez.Zehmet olmasa duzgun deyer daxil edin");
+                            }
                             name = Console.ReadLine();
+                            checkFullName = false;
                         } while (string.IsNullOrWhiteSpace(name));
                         GetSearchEmployees(hrm, x => x.FullName.Contains(name));
 
-                        Console.WriteLine($"\nMenu-ya qayitmaq ucun ENTER basin");
+                        Console.WriteLine($"\n       Menu -ya qayitmaq ucun ENTER duymesine basin......\n");
 
                         Console.ReadLine();
                         break;
@@ -112,10 +120,22 @@ namespace Cs.HumanResourceConsoleApp
 
                         var firstDate = GetCorrectTimeFromConsole();
 
+                        DateTime seconDate;
+                        bool checkSecondDate = true;
                         Console.WriteLine("Ikinci tarixi qeyd edin : ");
-                        var secondDate = GetCorrectTimeFromConsole();
+                        do
+                        {
+                            if (checkSecondDate == false)
+                            {
+                                Console.WriteLine("Daxil etdiyiniz tarix ilk daxil etdiyiniz tarixden boyuk olmalidir.....");
+                            }
+                            seconDate = GetCorrectTimeFromConsole();
+                            checkSecondDate = false;
+                        } while (seconDate<=firstDate);
+                        
 
-                        GetSearchEmployees(hrm, x => x.StartDate > firstDate && x.StartDate < secondDate);
+                        GetSearchEmployees(hrm, x => x.StartDate > firstDate && x.StartDate < seconDate);
+                        Console.WriteLine($"\n       Menu -ya qayitmaq ucun ENTER duymesine basin......\n");
                         Console.ReadLine();
                         break;
                     case "8":
@@ -137,10 +157,32 @@ namespace Cs.HumanResourceConsoleApp
                         double avarage = sum / count;
                         Console.WriteLine("Secdiyiniz departamentdeki iscilerin maaslarinin ortalamasi :");
                         Console.WriteLine($"Avarage Salary - {avarage}");
-
+                        Console.WriteLine($"\n       Menu -ya qayitmaq ucun ENTER duymesine basin......\n");
                         Console.ReadLine();
                         break;
-
+                    case "0":
+                        Console.Clear();
+                        Console.WriteLine($"Menu -dan cixmaq istediyinize eminsinizmi?\n1.Beli\n2.Xeyr\n");
+                        Console.WriteLine("\nSechiminizi daxil edin ve 'ENTER' duymesini kilikleyin.");
+                        string exit = Console.ReadLine();
+                        if (exit=="1")
+                        {
+                            option = "0";
+                            Console.WriteLine($"\n     Cixis olundu");
+                        }
+                        else
+                        {
+                            option = "1";
+                            Console.WriteLine($"\n       Menu- ya qayitmaq ucun ENTER duymesini basin");
+                        }
+                        Console.ReadLine();
+                        break;
+                        default:
+                        Console.Clear();
+                        Console.WriteLine("\n  Zehmet olmasa sechiminiz duzgun daxil edin. Siz 0-dan 8-e qeder reqem daxil ede bilersiz.");
+                        Console.WriteLine("\n    Menuya qayitmaq uchun 'ENTER' duymesini kilikleyin.");
+                        Console.ReadLine();
+                        break;
 
 
                 }
@@ -293,7 +335,7 @@ namespace Cs.HumanResourceConsoleApp
 
             } while (string.IsNullOrWhiteSpace(fullName) || !MakeFullName(fullName));
 
-            return fullName;
+            return fullName.Trim() ;
         }
 
         static DateTime GetCorrectTimeFromConsole()
@@ -305,11 +347,11 @@ namespace Cs.HumanResourceConsoleApp
             {
                 if (checkPosition == false)
                 {
-                    Console.WriteLine("Ilk onke Ay sonra Gun en son Il daxil edin");
+                    Console.WriteLine($"Ilk onke Ay sonra Gun en son Il(2000-{DateTime.Now.ToString("dd.MM.yyyy")} araliginda) daxil edin");
                 }
                 DateStr = Console.ReadLine();
                 checkPosition = false;
-            } while (string.IsNullOrWhiteSpace(DateStr) || !DateTime.TryParse(DateStr, out Date));
+            } while (string.IsNullOrWhiteSpace(DateStr) || !DateTime.TryParse(DateStr, out Date) || !(Date.Year>=2000 && Date<=DateTime.Now));
             return Date;
         }
 
@@ -348,7 +390,7 @@ namespace Cs.HumanResourceConsoleApp
             return position;
         }
 
-        static string GetCorrectEmpNoFromConsole()
+        static string GetCorrectEmpNoFromConsole(HumanResourceManager hrm)
         {
             string empNo;
             bool checkEmpNo = true;
@@ -356,11 +398,12 @@ namespace Cs.HumanResourceConsoleApp
             {
                 if (checkEmpNo == false)
                 {
-                    Console.WriteLine("Isci nomresi XX1001 formasinda olmalidir..(XX - Departamentin ilk iki herfidir)..");
+                    Console.WriteLine($"\nIsci Tapilmadi\n");
+                    Console.WriteLine($"\nIsci nomresi XX0000 formasinda olmalidir..(XX - Departamentin ilk iki herfidir)..");
                 }
                 empNo = Console.ReadLine();
                 checkEmpNo = false;
-            } while (string.IsNullOrWhiteSpace(empNo));
+            } while (string.IsNullOrWhiteSpace(empNo) || !hrm.HasEmployeeNo(empNo) );
             return empNo;
 
         }
