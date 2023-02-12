@@ -11,9 +11,9 @@ namespace Cs.HumanResourceConsoleApp.Classes
     {
          List<Employee> _employees = new List<Employee>();
         public List<Employee> Employees { get { return _employees; } }
-        private int ItEmployeeCount => _getItEmployeeCount(x=>x.Departament==EmployeeDepartament.Information_Technology);
-        private int FinanceEmployeeCount => _getItEmployeeCount(x=>x.Departament==EmployeeDepartament.Finance);
-        private int CrediteEmployeeCount => _getItEmployeeCount(x=>x.Departament==EmployeeDepartament.Credite);        
+        private int ItEmployeeCount => _getEmployeeCountPerDepartment(x=>x.Departament==EmployeeDepartament.Information_Technology);
+        private int FinanceEmployeeCount => _getEmployeeCountPerDepartment(x=>x.Departament==EmployeeDepartament.Finance);
+        private int CrediteEmployeeCount => _getEmployeeCountPerDepartment(x=>x.Departament==EmployeeDepartament.Credite);        
         static int _maxEmployeeCountForPerDepartment = 10;
        
 
@@ -27,7 +27,7 @@ namespace Cs.HumanResourceConsoleApp.Classes
                 if (employee.Departament == EmployeeDepartament.Information_Technology)
                 {
                     
-                    if (ItEmployeeCount <= _maxEmployeeCountForPerDepartment)
+                    if (ItEmployeeCount < _maxEmployeeCountForPerDepartment)
                     {
                         _employees.Add(employee);
                     }
@@ -40,7 +40,7 @@ namespace Cs.HumanResourceConsoleApp.Classes
                 else if (employee.Departament == EmployeeDepartament.Finance)
                 {
                     
-                    if (FinanceEmployeeCount <= _maxEmployeeCountForPerDepartment)
+                    if (FinanceEmployeeCount < _maxEmployeeCountForPerDepartment)
                     {
                         _employees.Add(employee);
                     }
@@ -54,7 +54,7 @@ namespace Cs.HumanResourceConsoleApp.Classes
                 else
                 {
                     
-                    if (CrediteEmployeeCount <= _maxEmployeeCountForPerDepartment)
+                    if (CrediteEmployeeCount < _maxEmployeeCountForPerDepartment)
                     {
                         _employees.Add(employee);
                     }
@@ -69,10 +69,7 @@ namespace Cs.HumanResourceConsoleApp.Classes
 
         public void EditEmployee(string employeeNo, double salary, EmployeePosition position)
         {
-            if (!HasEmployeeNo(employeeNo))
-            {
-                throw new NotFoundEmployeeException();
-            }
+           
             foreach (var item in _employees)
             {
                 if (item.No == employeeNo)
@@ -120,7 +117,7 @@ namespace Cs.HumanResourceConsoleApp.Classes
         }
 
 
-        private int _getItEmployeeCount(Predicate<Employee> check)
+        private int _getEmployeeCountPerDepartment(Predicate<Employee> check)
         {
             int count = 0;
             foreach (var item in _employees)

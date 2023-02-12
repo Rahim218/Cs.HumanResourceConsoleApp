@@ -42,15 +42,26 @@ namespace Cs.HumanResourceConsoleApp
                         Console.WriteLine("Departamenti daxil edin :");
                         ShowDepartamentOption();
                         var employeDepart = GetCorrectDepartamentFromConsole();
-
                         GetSearchEmployees(hrm, x => x.Departament == employeDepart);
-                        Console.WriteLine($"\n       Menu -ya qayitmaq ucun ENTER duymesine basin......\n");
+                        Console.WriteLine($"      Menu -ya qayitmaq ucun ENTER duymesine basin......\n");
                         Console.ReadLine();
 
                         break;
                     case "3":
                         Console.Clear();
-                        hrm.AddEmployee(CreateEmployee());
+                        try
+                        {
+                            hrm.AddEmployee(CreateEmployee());
+                        }
+                        catch (OutOfLimitPersonCountException ex)
+                        {
+
+                            Console.WriteLine("$\n            Departamentdeki isci limiti doludur.......\n");
+                        }                      
+                        catch(HasAlreadyBeenEmployeeEcxeption ex)
+                        {
+                            Console.WriteLine($"\n           Eyni No-lu isci artiq qeydiyyatdan kecib.....");
+                        }
                         Console.WriteLine($"\n       Menu -ya qayitmaq ucun ENTER duymesine basin......\n");
                         Console.ReadLine();
                         break;
@@ -59,9 +70,7 @@ namespace Cs.HumanResourceConsoleApp
                         Console.WriteLine("Isci No-sunu daxil edin :");
                         var employeeNo = GetCorrectEmpNoFromConsole(hrm);
 
-                          GetSearchEmployees(hrm, x => x.No == employeeNo);
-
-                     
+                         GetSearchEmployees(hrm, x => x.No == employeeNo);
 
                         Console.WriteLine("Yeni maasi daxil edin : ");
                         var newSalary = GetCorrectSalaryFromConssole();
@@ -109,9 +118,7 @@ namespace Cs.HumanResourceConsoleApp
                             checkFullName = false;
                         } while (string.IsNullOrWhiteSpace(name));
                         GetSearchEmployees(hrm, x => x.FullName.Contains(name));
-
                         Console.WriteLine($"\n       Menu -ya qayitmaq ucun ENTER duymesine basin......\n");
-
                         Console.ReadLine();
                         break;
                     case "7":
