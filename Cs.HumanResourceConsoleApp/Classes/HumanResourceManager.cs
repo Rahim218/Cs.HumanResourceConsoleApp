@@ -14,7 +14,7 @@ namespace Cs.HumanResourceConsoleApp.Classes
         private int ItEmployeeCount => _getEmployeeCountPerDepartment(x=>x.Departament==EmployeeDepartament.Information_Technology);
         private int FinanceEmployeeCount => _getEmployeeCountPerDepartment(x=>x.Departament==EmployeeDepartament.Finance);
         private int CrediteEmployeeCount => _getEmployeeCountPerDepartment(x=>x.Departament==EmployeeDepartament.Credite);        
-        static int _maxEmployeeCountForPerDepartment = 10;
+        static int _maxEmployeeCountForPerDepartment = 2;
        
 
         public void AddEmployee(Employee employee)

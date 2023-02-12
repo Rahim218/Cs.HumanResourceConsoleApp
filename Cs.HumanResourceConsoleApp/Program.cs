@@ -33,7 +33,14 @@ namespace Cs.HumanResourceConsoleApp
                 {
                     case "1":
                         Console.Clear();
-                        ShowEmployee(hrm);
+                        if (hrm.Employees.Count>0)
+                        {
+                            ShowEmployee(hrm);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"\n     Hal - hazirda qeydiyyatimizda isci yoxdur......");
+                        }
                         Console.WriteLine($"\n       Menu -ya qayitmaq ucun ENTER duymesine basin......\n");
                         Console.ReadLine();
                         break;
@@ -67,39 +74,55 @@ namespace Cs.HumanResourceConsoleApp
                         break;
                     case "4":
                         Console.Clear();
-                        Console.WriteLine("Isci No-sunu daxil edin :");
-                        var employeeNo = GetCorrectEmpNoFromConsole(hrm);
+                        if (hrm.Employees.Count>0)
+                        {
+                            Console.WriteLine("Isci No-sunu daxil edin :");
+                            var employeeNo = GetCorrectEmpNoFromConsole(hrm);
 
-                         GetSearchEmployees(hrm, x => x.No == employeeNo);
+                            GetSearchEmployees(hrm, x => x.No == employeeNo);
 
-                        Console.WriteLine("Yeni maasi daxil edin : ");
-                        var newSalary = GetCorrectSalaryFromConssole();
+                            Console.WriteLine("Yeni maasi daxil edin : ");
+                            var newSalary = GetCorrectSalaryFromConssole();
 
-                        Console.WriteLine("Yeni position daxil edin : ");
+                            Console.WriteLine("Yeni position daxil edin : ");
 
-                        ShowPositionOption();
+                            ShowPositionOption();
 
-                        var employeePosition = GetCorrectPositionFromConsole();
+                            var employeePosition = GetCorrectPositionFromConsole();
 
-                        hrm.EditEmployee(employeeNo, newSalary, employeePosition);
+                            hrm.EditEmployee(employeeNo, newSalary, employeePosition);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"\n     Hal - hazirda qeydiyyatimizda isci yoxdur......");
+                        }                      
                         Console.WriteLine($"\n       Menu -ya qayitmaq ucun ENTER duymesine basin......\n");
                         Console.ReadLine();
                         break;
                     case "5":
                         Console.Clear();
-                        Console.WriteLine("Isci nomresini daxil edin :");
-                        var employeNo = GetCorrectEmpNoFromConsole(hrm);
-
-                        try
+                        if (hrm.Employees.Count>0)
                         {
-                            hrm.RemoveEmployee(employeNo);
-                        }
-                        catch (NotFoundEmployeeException ex)
-                        {
+                            Console.WriteLine("Isci nomresini daxil edin :");
+                            var employeNo = GetCorrectEmpNoFromConsole(hrm);
 
-                            Console.WriteLine("Isci tapilmadi");
-                            Console.WriteLine($"\n       Menu-ya qayidib secim etmek ucun ENTER duymesine basin.......\n");
+                            try
+                            {
+                                hrm.RemoveEmployee(employeNo);
+                            }
+                            catch (NotFoundEmployeeException ex)
+                            {
+
+                                Console.WriteLine("Isci tapilmadi");
+
+                            }
                         }
+                        else
+                        {
+                            Console.WriteLine($"\n     Hal - hazirda qeydiyyatimizda isci yoxdur......");
+                        }
+                        Console.WriteLine($"\n       Isci ugurla silindi......");
+                        Console.WriteLine($"\n       Menu-ya qayidib secim etmek ucun ENTER duymesine basin.......\n");
 
                         Console.ReadLine();
                         break;

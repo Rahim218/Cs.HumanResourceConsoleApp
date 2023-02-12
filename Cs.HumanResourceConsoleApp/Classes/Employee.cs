@@ -22,7 +22,7 @@ namespace Cs.HumanResourceConsoleApp.Classes
         private string _no;
         public string No { get { return _no; } }
         
-        public string FullName;
+        public string FullName; 
         public EmployeePosition Position;
         public double Salary;       
         public EmployeeDepartament Departament;
